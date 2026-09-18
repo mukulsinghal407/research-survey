@@ -16,7 +16,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; }
 button { font: inherit; }
-.page-shell { min-height: 100vh; overflow: hidden; position: relative; padding: 33px 5.6vw 27px; display: flex; flex-direction: column; }
+.page-shell { min-height: 100vh; overflow: hidden; position: relative; padding: 28px 5.6vw 20px; display: flex; flex-direction: column; }
 .site-header { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
 .logo { display: inline-flex; align-items: center; color: var(--ink); font-size: 16px; font-weight: 700; letter-spacing: -.04em; text-decoration: none; }
 .logo-mark { width: 26px; height: 26px; border: 1.5px solid var(--ink); border-radius: 50%; margin-right: 9px; display: inline-flex; align-items: center; justify-content: center; position: relative; }
@@ -28,24 +28,24 @@ button { font: inherit; }
 .slash { margin: 0 13px; color: #bcc7bc; }
 .menu-button { border: 0; background: transparent; width: 30px; height: 25px; padding: 4px 0; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
 .menu-button span { height: 1px; background: var(--ink); width: 100%; }
-.content-grid { align-items: center; display: grid; flex: 1; gap: 32px; grid-template-columns: 1fr; margin: 38px auto 46px; max-width: 1440px; width: 100%; }
-.intro { margin: 0 auto; max-width: 850px; position: relative; text-align: center; z-index: 1; }
+.content-grid { align-items: center; display: grid; flex: 1; gap: clamp(42px, 7vw, 110px); grid-template-columns: minmax(280px, .85fr) minmax(480px, 1.15fr); margin: 24px auto 28px; max-width: 1240px; width: 100%; }
+.intro { margin: 0 auto; max-width: 520px; position: relative; text-align: left; z-index: 1; }
 .kicker, .section-label { color: var(--orange); font-size: 10px; letter-spacing: .13em; text-transform: uppercase; margin: 0 0 21px; }
 h1 { font-size: clamp(48px, 5.7vw, 82px); letter-spacing: -.075em; line-height: .99; margin: 0; font-weight: 500; }
 h1 em { color: #5d7266; font-family: 'Playfair Display', serif; font-weight: 500; letter-spacing: -.08em; }
 .intro-copy { color: #65756c; font-size: 15px; line-height: 1.65; margin: 31px auto 30px; max-width: 520px; }
-.time-note { align-items: center; color: #86938d; display: flex; font-family: 'DM Mono', monospace; font-size: 10px; gap: 7px; justify-content: center; }
+.time-note { align-items: center; color: #86938d; display: flex; font-family: 'DM Mono', monospace; font-size: 10px; gap: 7px; justify-content: flex-start; }
 .time-note strong { color: var(--ink); font-weight: 500; }
 .clock { font-size: 17px; }
 .tiny-line { background: #c8d3c9; display: inline-block; height: 1px; margin-left: 5px; width: 35px; }
-.survey-card { background: #fff; border: 1px solid #e2e9df; border-radius: 4px; box-shadow: 0 19px 55px rgba(44, 75, 54, .08); min-height: 590px; padding: 31px clamp(27px, 4vw, 53px) 34px; position: relative; width: 100%; z-index: 1; }
+.survey-card { background: #fff; border: 1px solid #e2e9df; border-radius: 4px; box-shadow: 0 19px 55px rgba(44, 75, 54, .08); min-height: 0; padding: 27px clamp(27px, 4vw, 53px) 30px; position: relative; width: 100%; z-index: 1; }
 .survey-tabs { align-items: center; display: flex; margin-bottom: 36px; }
 .tab { background: transparent; border: 0; color: #a4aea6; cursor: pointer; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .08em; padding: 0; text-transform: uppercase; }
 .tab.active { color: var(--ink); }
 .tab-dot { border: 1px solid #bbc9bd; border-radius: 50%; display: inline-block; height: 9px; margin-right: 7px; vertical-align: -1px; width: 9px; }
 .tab.active .tab-dot { background: var(--orange); border-color: var(--orange); }
 .tab-line { background: #e2e8e1; height: 1px; margin: 0 15px; width: 37px; }
-.progress-wrap { margin-bottom: 58px; }
+.progress-wrap { margin-bottom: 40px; }
 .progress-meta { color: #91a097; display: flex; font-size: 9px; justify-content: space-between; letter-spacing: .05em; margin-bottom: 11px; text-transform: uppercase; }
 .progress-meta b { color: #ccd5ce; font-weight: 400; padding: 0 4px; }
 .progress-track { background: #edf1eb; height: 3px; width: 100%; }
@@ -67,7 +67,7 @@ h1 em { color: #5d7266; font-family: 'Playfair Display', serif; font-weight: 500
 .option-number { color: #a2afa5; font-family: 'DM Mono', monospace; font-size: 9px; margin-right: 16px; }
 .check { color: #a9b8ae; font-size: 14px; margin-left: auto; }
 .selected .check { color: var(--orange); }
-.survey-footer { align-items: center; border-top: 1px solid #edf0eb; display: flex; justify-content: space-between; margin-top: 39px; padding-top: 24px; }
+.survey-footer { align-items: center; border-top: 1px solid #edf0eb; display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; }
 .submission-error { color: var(--orange); font-size: 11px; line-height: 1.5; margin: 14px 0 0; }
 .privacy { color: #a4aea6; font-size: 9px; }
 .lock { font-size: 15px; margin-right: 5px; vertical-align: -1px; }
@@ -125,20 +125,21 @@ h1 em { color: #5d7266; font-family: 'Playfair Display', serif; font-weight: 500
 @media (max-width: 820px) {
   .page-shell { padding: 24px 6vw 22px; }
   .header-note { display: none; }
-  .content-grid { gap: 38px; margin: 65px auto 55px; max-width: 100%; }
-  .intro { padding: 0; }
+  .content-grid { gap: 30px; grid-template-columns: 1fr; margin: 30px auto 35px; max-width: 100%; }
+  .survey-card { order: -1; }
+  .intro { max-width: 620px; padding: 0; text-align: center; }
+  .time-note { justify-content: center; }
   h1 { font-size: clamp(49px, 12vw, 75px); }
-  .intro-copy { margin-bottom: 22px; }
-  .survey-card { min-height: auto; }
+  .intro-copy { margin-bottom: 18px; }
   .site-footer span:nth-child(2) { display: none; }
 }
 @media (max-width: 500px) {
   .page-shell { padding: 21px 20px 19px; }
-  .content-grid { margin-top: 53px; }
-  .intro-copy { font-size: 14px; }
-  .survey-card { padding: 25px 20px 25px; }
+  .content-grid { gap: 27px; margin-top: 21px; }
+  .intro-copy { font-size: 14px; margin-top: 18px; }
+  .survey-card { padding: 22px 20px 23px; }
   .survey-tabs { margin-bottom: 30px; }
-  .progress-wrap { margin-bottom: 43px; }
+  .progress-wrap { margin-bottom: 34px; }
   .question h2 { font-size: 26px; }
   .survey-footer { align-items: flex-start; flex-direction: column-reverse; gap: 20px; }
   .survey-footer .button { width: 100%; }

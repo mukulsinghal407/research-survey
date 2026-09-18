@@ -14,7 +14,7 @@ function App() {
         <div className="intro"><p className="kicker">A moment before we begin</p><h1>Make space<br /><em>for what’s next.</em></h1><p className="intro-copy">A few quick questions help us understand your experience — before and after you step through the door.</p><div className="time-note"><span className="clock">◷</span><strong>2 min</strong> to complete <span className="tiny-line" /></div></div>
         <Survey />
       </div>
-      <footer className="site-footer"><span>OPEN DOOR / FIELD NOTES</span><span>Designed for curious people <span className="heart">♥</span></span><span>Scroll to explore <b>↓</b></span></footer>
+      <footer className="site-footer"><span>OPEN DOOR / FIELD NOTES</span><span>Designed for curious people <span className="heart">♥</span></span></footer>
     </main>
   );
 }
