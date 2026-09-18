@@ -29,33 +29,13 @@ participant-facing UI so the study remains blind. The `advisorGroup` value in
 `src/main.jsx` is the integration point for routing the conversation to the
 appropriate human or AI service.
 
-## Netlify submission API
+## Local submission logging
 
-The survey sends one JSON payload to
-`/.netlify/functions/submit-survey` when the participant finishes. The payload
-contains a schema version, neutral session ID, consent and participant answers,
-every advisor prompt and response, the experiment assignment, and the
-submission timestamp.
-
-The blank function in
-[`netlify/functions/submit-survey.js`](./netlify/functions/submit-survey.js)
-validates the request shape and returns `202 Accepted`. Its provider
-integration point is intentionally left open for writing to a spreadsheet,
-database, or message queue. It does not claim to persist data until that
-integration is configured.
-
-During testing, the complete payload is printed as both an object and
-formatted JSON in the browser console. This is controlled by
+When the participant finishes, the complete JSON payload is printed as both an
+object and formatted JSON in the browser console. This is controlled by
 `submissionConfig.logToConsole` in `src/surveyConfig.js`; set it to `false`
 before collecting real participant data because the payload contains personal
 information.
-
-For local end-to-end testing, run the site with Netlify Dev rather than Vite
-alone so the function route is available:
-
-```bash
-npx netlify dev
-```
 
 ## Frontend architecture
 
@@ -64,8 +44,6 @@ The frontend is organized around small, single-purpose modules:
 - `src/components/` contains reusable presentation components such as the
   question renderer, progress indicator, advisor modal, and success card.
 - `src/domain/` contains experiment assignment and answer-validation rules.
-- `src/services/` contains the API boundary, keeping transport details out of
-  the survey UI.
 - `src/surveyConfig.js` remains the single place to configure questions,
   choices, validation keys, and experiment settings.
 

@@ -1,4 +1,4 @@
-import { experimentConfig } from '../surveyConfig';
+import { experimentConfig } from '../surveyConfig.js';
 
 export function assignExperimentGroup() {
   const assignedNumber = Math.floor(Math.random() * 100) + 1;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Progress } from './Progress';
 import { QuestionAnswer } from './QuestionAnswer';
@@ -6,7 +6,6 @@ import { SuccessCard } from './SuccessCard';
 import { validateAnswer } from '../domain/surveyValidation';
 import { assignExperimentGroup, createSessionId } from '../domain/experiment';
 import { advisorConversation, postQuestions, preQuestions, submissionConfig } from '../surveyConfig';
-import { submitSurvey } from '../services/surveyApi';
 import { AdvisorModal } from './AdvisorModal';
 
 
@@ -40,6 +39,18 @@ function SurveyTabs({ activeTab, onSelect }) {
   );
 }
 
+function SimulationLoader({ group }) {
+  const advisorType = group === 'ai' ? 'an AI beauty advisor' : 'a human beauty advisor';
+
+  return (
+    <div className="simulation-loader" role="status" aria-live="polite">
+      <div className="loader-spinner" aria-hidden="true" />
+      <p className="loader-label">Preparing your experience</p>
+      <p className="loader-copy">Next, you’ll speak with {advisorType}.</p>
+    </div>
+  );
+}
+
 export default function Survey() {
   const [sessionId] = useState(createSessionId);
   const [experiment] = useState(assignExperimentGroup);
@@ -50,8 +61,20 @@ export default function Survey() {
   const [advisorAnswer, setAdvisorAnswer] = useState('');
   const [advisorReplies, setAdvisorReplies] = useState([]);
   const [showAdvisor, setShowAdvisor] = useState(false);
+  const [showSimulationLoader, setShowSimulationLoader] = useState(false);
   const [error, setError] = useState('');
   const [submission, setSubmission] = useState({ state: 'idle', error: '' });
+  useEffect(() => {
+    if (!showSimulationLoader) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setShowSimulationLoader(false);
+      setShowAdvisor(true);
+    }, 2500);
+
+    return () => window.clearTimeout(timer);
+  }, [showSimulationLoader]);
+
   const questions = stages[activeTab];
   const question = questions[step];
   const answerKey = `${activeTab}-${question.id}`;
@@ -68,7 +91,7 @@ export default function Survey() {
     setError('');
   };
 
-  const continueSurvey = async () => {
+  const continueSurvey = () => {
     const validationError = validateAnswer(question, selected);
     if (validationError) {
       setError(validationError);
@@ -82,7 +105,7 @@ export default function Survey() {
       setAdvisorStep(0);
       setAdvisorAnswer('');
       setAdvisorReplies([]);
-      setShowAdvisor(true);
+      setShowSimulationLoader(true);
       return;
     }
     const payload = buildSubmission({ sessionId, answers, advisorReplies, experiment });
@@ -90,18 +113,12 @@ export default function Survey() {
       console.log('Survey submission:', payload);
       console.log('Survey submission JSON:', JSON.stringify(payload, null, 2));
     }
-    setSubmission({ state: 'sending', error: '' });
-    try {
-      await submitSurvey(payload);
-      setSubmission({ state: 'submitted', error: '' });
-    } catch (submitError) {
-      setSubmission({ state: 'error', error: submitError.message });
-    }
+    setSubmission({ state: 'submitted', error: '' });
   };
 
-  const continueAdvisor = () => {
-    if (!advisorAnswer) return;
-    const replies = [...advisorReplies, advisorAnswer];
+  const continueAdvisor = (selectedAnswer = advisorAnswer) => {
+    if (!selectedAnswer) return;
+    const replies = [...advisorReplies, selectedAnswer];
     setAdvisorReplies(replies);
     if (advisorStep < advisorConversation.length - 1) {
       setAdvisorStep((current) => current + 1);
@@ -114,11 +131,12 @@ export default function Survey() {
   };
 
   if (submission.state === 'submitted') {
-    return <SuccessCard onRestart={() => window.location.reload()} />;
+    return <SuccessCard />;
   }
 
   return (
     <>
+      {showSimulationLoader && <SimulationLoader group={experiment.group} />}
       <section className="survey-card">
         <SurveyTabs activeTab={activeTab} onSelect={resetStage} />
         <Progress activeTab={activeTab} step={step} total={questions.length} />
@@ -130,14 +148,13 @@ export default function Survey() {
         </div>
         <div className="survey-footer">
           <span className="privacy"><span className="lock">⌑</span> Your answers are private</span>
-          <button className="button button-dark" disabled={!selected || submission.state === 'sending'} onClick={continueSurvey}>
-            {submission.state === 'sending' ? 'Submitting…' : (step === questions.length - 1 ? (activeTab === 'pre' ? 'Continue to after' : 'Finish survey') : 'Next question')} <span>↗</span>
+          <button className="button button-dark" disabled={!selected} onClick={continueSurvey}>
+            {(step === questions.length - 1 ? (activeTab === 'pre' ? 'Continue to after' : 'Finish survey') : 'Next question')} <span>↗</span>
           </button>
         </div>
-        {submission.error && <p className="submission-error" role="alert">{submission.error} Please try again.</p>}
       </section>
       {showAdvisor && (
-        <AdvisorModal conversation={advisorConversation} step={advisorStep} answer={advisorAnswer} replies={advisorReplies} onChoose={setAdvisorAnswer} onContinue={continueAdvisor} onClose={() => setShowAdvisor(false)} />
+        <AdvisorModal conversation={advisorConversation} step={advisorStep} answer={advisorAnswer} replies={advisorReplies} group={experiment.group} onContinue={continueAdvisor} onClose={() => setShowAdvisor(false)} />
       )}
     </>
   );
